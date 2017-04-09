@@ -1,0 +1,13 @@
+body{
+  width: 600px;
+  margin: auto;
+}
+.floatRight{
+  float: right;
+}
+.clearFloat{
+  clear: both;
+}
+.small{
+  font-size: small;
+}
