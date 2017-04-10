@@ -1,6 +1,6 @@
 import React from "react";
 import { IndexLink, Link } from "react-router";
-import UserVoteForm from "../components/forms/UserVoteForm";
+import UserVoteForm from "../components/UserVoteForm";
 
 export default class index extends React.Component {
   render() {

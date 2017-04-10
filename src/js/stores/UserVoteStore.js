@@ -51,7 +51,7 @@ class UserVoteStore extends EventEmitter {
 
 }
 
-const todoStore = new TodoStore;
-dispatcher.register(todoStore.handleActions.bind(todoStore));
+const userVoteStore = new UserVoteStore;
+dispatcher.register(userVoteStore.handleActions.bind(userVoteStore));
 
-export default todoStore;
+export default userVoteStore;
