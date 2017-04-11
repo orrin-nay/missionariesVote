@@ -37,13 +37,28 @@ class UserVoteStore extends EventEmitter {
 
   handleActions(action) {
     switch(action.type) {
-      case "CREATE_TODO": {
-        this.createTodo(action.text);
+      case "SENDING_USER_INFO": {
+        this.emit("SENDING_USER_INFO");
         break;
       }
-      case "RECEIVE_TODOS": {
-        this.todos = action.todos;
-        this.emit("change");
+      case "NO_NAME_SUBMITTED": {
+        this.emit("NO_NAME_SUBMITTED");
+        break;
+      }
+      case "ALREADY_VOTED": {
+        this.emit("ALREADY_VOTED");
+        break;
+      }
+      case "INVALID_EMAIL": {
+        this.emit("INVALID_EMAIL");
+        break;
+      }
+      case "INVALID_PHONE": {
+        this.emit("INVALID_PHONE");
+        break;
+      }
+      case "SUCCESFULLY_SENT_USER_INFO": {
+        this.emit("SUCCESFULLY_SENT_USER_INFO");
         break;
       }
     }

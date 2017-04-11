@@ -11,3 +11,7 @@ body{
 .small{
   font-size: small;
 }
+.error{
+  font-size: small;
+  color: red;
+}

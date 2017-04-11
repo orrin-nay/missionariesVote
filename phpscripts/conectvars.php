@@ -2,6 +2,6 @@
    $dbhost = 'localhost';
    $dbuser = 'root';
    $dbpass = 'root';
-   $dbname = 'techbluecollar';
+   $dbname = 'missionariesvote';
    $link  = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
 ?>
