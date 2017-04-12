@@ -5,44 +5,40 @@ header('Access-Control-Allow-Headers: Host, Connection, Accept, Authorization, C
 if($_SERVER["REQUEST_METHOD"]== "OPTIONS"){
     echo "";die;
 }
-    $game = filter_input(INPUT_POST, 'game');
-    if (!empty($game)) {
-        require_once './conectvars.php';
-        $gameIdSQL = "SELECT iduserinfo FROM userinfo WHERE `name` = ?";
-        $userIdStmt = $link->prepare($gameIdSQL);
-        $gameIdStmt->bind_param("s", $name);
-        $gameIdStmt->execute();
-        $gameIdStmt->bind_result($idGame);
-        $gameIdStmt->fetch();
-        $gameIdStmt->close();
-        if(empty($idGame)){
-          $addUserSQL = "INSERT INTO userinfo (`name`,`phone`, `email`)
-           VALUES (?, ?, ?)";
-          $addUserStmt = $link->prepare($addUserSQL);
-          $addUserStmt->bind_param("sss", $name,$phoneNumber, $email);
-          $addUserStmt->execute();
-          $addUserStmt->close();
+$game = filter_input(INPUT_POST, 'game');
+if (!empty($game)) {
+    require_once './conectvars.php';
+    $gameIdSQL = "SELECT idgames FROM games WHERE `name` = ?";
+    $gameIdStmt = $link->prepare($gameIdSQL);
+    $gameIdStmt->bind_param("s", $game);
+    $gameIdStmt->execute();
+    $gameIdStmt->bind_result($idGame);
+    $gameIdStmt->fetch();
+    $gameIdStmt->close();
+    if(empty($idGame)){
+      $addGameSQL = "INSERT INTO games (`name`)
+       VALUES (?)";
+      $addGameStmt = $link->prepare($addGameSQL);
+      $addGameStmt->bind_param("s", $game);
+      $addGameStmt->execute();
+      $addGameStmt->close();
 
-          $userIdSQL = "SELECT iduserinfo FROM userinfo WHERE `name` = ?";
-          $userIdStmt = $link->prepare($userIdSQL);
-          $userIdStmt->bind_param("s", $name);
-          $userIdStmt->execute();
-          $userIdStmt->bind_result($idUser);
-          $userIdStmt->fetch();
-          $userIdStmt->close();
-        }
-        $votesUserIdSQL = "SELECT iduser FROM votes WHERE `iduser` = ?";
-        $votesUserIdStmt = $link->prepare($votesUserIdSQL);
-        $votesUserIdStmt->bind_param("s", $idUser);
-        $votesUserIdStmt->execute();
-        $votesUserIdStmt->bind_result($voteUserId);
-        $votesUserIdStmt->fetch();
-        $votesUserIdStmt->close();
-        if($voteUserId){
-          echo'1';
-        }
-      $link->close();
-      }
-      else{
-        echo'0';
-      }
+      $gameIdSQL = "SELECT idgames, name FROM games WHERE `name` = ?";
+      $gameIdStmt = $link->prepare($gameIdSQL);
+      $gameIdStmt->bind_param("s", $game);
+      $gameIdStmt->execute();
+      $gameIdStmt->bind_result($idGame, $name);
+      $gameIdStmt->fetch();
+      $gameIdStmt->close();
+      $gameObject = array();
+      array_push($gameObject, $idGame, $name);
+      echo json_encode($gameObject);
+    }
+    else{
+      echo '1';
+    }
+  $link->close();
+  }
+  else{
+    echo '0';
+  }

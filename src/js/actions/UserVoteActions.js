@@ -35,18 +35,17 @@ export function sendUserInfo(name, email, phone) {
   info
     )
     .then((response) => {
-      console.log(response.data);
       switch (response.data) {
-        case "0":
+        case 0:
           dispatcher.dispatch({type: "NO_NAME_SUBMITTED"});
           break;
-        case "1":
+        case 1:
           dispatcher.dispatch({type: "ALREADY_VOTED"});
           break;
-        case "2":
+        case 2:
           dispatcher.dispatch({type: "INVALID_EMAIL"});
           break;
-        case "3":
+        case 3:
           dispatcher.dispatch({type: "INVALID_PHONE"});
           break;
         default:
@@ -69,19 +68,57 @@ export function sendNewGame(game) {
   info
     )
     .then((response) => {
-      console.log(response.data);
       switch (response.data) {
-        case "0":
+        case 0:
           dispatcher.dispatch({type: "NO_GAME_SUBMITTED"});
           break;
-        case "1":
+        case 1:
           dispatcher.dispatch({type: "GAME_ALREADY_SUBMITTED"});
           break;
         default:
-          dispatcher.dispatch({type: "SUCCESFULLY_SENT_GAME"});
+          dispatcher.dispatch({type: "SUCCESFULLY_SENT_GAME", payload: response.data});
       }
     })
     .catch((err) => {
       dispatcher.dispatch({type: "FETCH_TWEETS_REJECTED", payload: err})
     })
+  }
+  export function getGames(){
+    axios.get(handlersURL+"getgames.php")
+      .then((response) => {
+        dispatcher.dispatch({type: "GAMES_RECIVED", payload: response.data})
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatcher.dispatch({type: "FETCH_TWEETS_REJECTED", payload: err})
+      })
+  }
+  export function vote(games){
+    let gameIds = [];
+    let info = new URLSearchParams();
+    for (var i = 0; i < games.length; i++) {
+      if (games[i].checked) {
+          gameIds.push(games[i].gameId)
+      }
+    }
+    info.append("votes", JSON.stringify(gameIds))
+    dispatcher.dispatch({type: "SENDING_VOTES"});
+    axios.post(handlersURL+"sendvote.php", info)
+      .then((response) => {
+        dispatcher.dispatch({type: "VOTE_SENT", payload: response.data})
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatcher.dispatch({type: "FETCH_TWEETS_REJECTED", payload: err})
+      })
+  }
+  export function getGraphData(){
+    axios.post(handlersURL+"getbargraphdata.php")
+      .then((response) => {
+        dispatcher.dispatch({type: "RECIVED_GRAPH_DATA", payload: response.data})
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatcher.dispatch({type: "FETCH_TWEETS_REJECTED", payload: err})
+      })
   }

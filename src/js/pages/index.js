@@ -1,6 +1,7 @@
 import React from "react";
 import { IndexLink, Link } from "react-router";
 import UserVoteForm from "../components/UserVoteForm";
+import BarGraph from "../components/BarGraph";
 
 export default class index extends React.Component {
   render() {
@@ -8,7 +9,9 @@ export default class index extends React.Component {
       <div>
         <h2 class="floatRight small"><Link to="admin">Admin Login</Link></h2>
         <h1>Missionary Game Vote</h1>
-        <img src="imgs/imgres.png" class="floatRight clearFloat" height="194" width="259"></img>
+        <div width="370" class="floatRight clearFloat">
+          <BarGraph/>
+        </div>
         <UserVoteForm />
        </div>
     );

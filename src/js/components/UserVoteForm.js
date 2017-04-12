@@ -11,8 +11,10 @@ export default class UserVoteForm extends React.Component {
       showLoding: false,
       showGames: false,
       showErrorMsg: false,
-      errorMsg: ""
+      errorMsg: "",
+      gamesList: []
     };
+    this.gamesList = "";
     this.userInfoForm =
      <form>
         <label for="name">Name</label>
@@ -51,6 +53,10 @@ export default class UserVoteForm extends React.Component {
     UserVoteStore.on("INVALID_EMAIL", this.invalidEmail.bind(this));
     UserVoteStore.on("INVALID_PHONE", this.invalidPhone.bind(this));
     UserVoteStore.on("SUCCESFULLY_SENT_USER_INFO", this.showGames.bind(this));
+    UserVoteStore.on("GAMES_RECIVED", this.buildGamesList.bind(this));
+    UserVoteStore.on("SENDING_VOTES", this.showLoding.bind(this));
+    UserVoteStore.on("VOTE_SENT", this.voteSent.bind(this));
+    UserVoteActions.getGames();
   }
   componentWillUnmount() {
     UserVoteStore.removeListener("SENDING_USER_INFO", this.showLoding.bind(this));
@@ -59,6 +65,13 @@ export default class UserVoteForm extends React.Component {
     UserVoteStore.removeListener("INVALID_EMAIL", this.invalidEmail.bind(this));
     UserVoteStore.removeListener("INVALID_PHONE", this.invalidPhone.bind(this));
     UserVoteStore.removeListener("SUCCESFULLY_SENT_USER_INFO", this.showGames.bind(this));
+    UserVoteStore.removeListener("GAMES_RECIVED", this.buildGamesList.bind(this));
+    UserVoteStore.removeListener("SENDING_VOTES", this.showLoding.bind(this));
+    UserVoteStore.removeListener("VOTE_SENT", this.voteSent.bind(this));
+  }
+  voteSent(){
+    this.showUserInfoForm();
+    UserVoteActions.getGraphData();
   }
   showLoding(){
     this.setState({
@@ -112,10 +125,43 @@ export default class UserVoteForm extends React.Component {
       showErrorMsg: false,
     });
   }
+  showUserInfoForm(){
+    this.setState({
+      showUserInfo: true,
+      showLoding: false,
+      showGames: false,
+      showErrorMsg: false,
+    });
+  }
+  vote(){
+    UserVoteActions.vote(UserVoteStore.games);
+  }
+  userSelectedGame(e){
+    let gameId = e.target.id.substring("gameId".length);
+    for (var i = 0; i < UserVoteStore.games.length; i++) {
+      if (UserVoteStore.games[i].gameId == gameId) {
+        UserVoteStore.games[i].checked = true;
+        return;
+      }
+    }
+  }
+  buildGamesList(){
+    this.setState({
+      gamesList : UserVoteStore.games.map(game => <li key={game.gameId} class="game">
+      <input onChange={this.userSelectedGame.bind(this)} type="checkbox"
+        id={"gameId" + game.gameId}></input>
+      <lable for={"gameId" + game.gameId}>{game.name}</lable></li>)
+    });
+  }
   gameChanged(e){
     this.game = e.target.value;
   }
   sendNewGame(){
+    for (var i = 0; i < UserVoteStore.games.length; i++) {
+      if(UserVoteStore.games[i].name == this.game){
+        return;
+      }
+    }
     UserVoteActions.sendNewGame(this.game);
   }
   sendUserInfo(){
@@ -130,12 +176,14 @@ export default class UserVoteForm extends React.Component {
             {this.state.showGames?
               <div>
                 <h2>Games</h2>
+                <ul class="noBulletsList">{this.state.gamesList}</ul>
                 <form>
-                  <label for="addGame">Add game</label>
+                  <label for="addGame">Add game   </label>
+                  <input type="button" value="Add" onClick={this.sendNewGame.bind(this)}></input>
                   <br></br>
                   <input type="text" id="addGame" onChange={this.gameChanged.bind(this)}></input>
-                  <br></br><br></br>
-                  <input type="button" value="Add" onClick={this.sendNewGame.bind(this)}></input>
+                  <br></br>
+                  <input type="button" value="vote" onClick={this.vote.bind(this)}></input>
                 </form>
               </div>:null}
           </div>

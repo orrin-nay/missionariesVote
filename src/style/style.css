@@ -15,3 +15,9 @@ body{
   font-size: small;
   color: red;
 }
+.noBulletsList{
+  list-style: none;
+}
+.game{
+  font-size: large;
+}

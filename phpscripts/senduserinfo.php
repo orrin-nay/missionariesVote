@@ -18,7 +18,10 @@ if($_SERVER["REQUEST_METHOD"]== "OPTIONS"){
     if(!empty($phoneNumber)){
       $phoneNumber = preg_replace("/[^0-9]/", '', $phoneNumber);
       if (strlen($phoneNumber) == 11) $phoneNumber = preg_replace("/^1/", '',$phoneNumber);
-      if (strlen($phoneNumber) != 10) echo '3'; return;
+      if (strlen($phoneNumber) != 10){
+         echo '3';
+         return;
+       }
     }
     if (!empty($name)) {
         require_once './conectvars.php';
@@ -55,6 +58,8 @@ if($_SERVER["REQUEST_METHOD"]== "OPTIONS"){
         if($voteUserId){
           echo'1';
         }
+        session_start();
+        $_SESSION['userId'] = $idUser;
       $link->close();
       }
       else{

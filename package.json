@@ -17,6 +17,7 @@
     "flux": "^2.1.1",
     "history": "^1.17.0",
     "react": "^0.14.6",
+    "react-bar-chart": "^0.1.1",
     "react-dom": "^0.14.6",
     "react-router": "^1.0.3",
     "webpack": "^1.12.9",

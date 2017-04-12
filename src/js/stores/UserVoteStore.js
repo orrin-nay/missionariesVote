@@ -4,35 +4,7 @@ import dispatcher from "../dispatcher";
 
 class UserVoteStore extends EventEmitter {
   constructor() {
-    super()
-    this.todos = [
-      {
-        id: 113464613,
-        text: "Go Shopping",
-        complete: false
-      },
-      {
-        id: 235684679,
-        text: "Pay Water Bill",
-        complete: false
-      },
-    ];
-  }
-
-  createTodo(text) {
-    const id = Date.now();
-
-    this.todos.push({
-      id,
-      text,
-      complete: false,
-    });
-
-    this.emit("change");
-  }
-
-  getAll() {
-    return this.todos;
+    super();
   }
 
   handleActions(action) {
@@ -61,9 +33,57 @@ class UserVoteStore extends EventEmitter {
         this.emit("SUCCESFULLY_SENT_USER_INFO");
         break;
       }
+      case "GAMES_RECIVED": {
+        this.storeGames(action.payload);
+        this.emit("GAMES_RECIVED");
+        break;
+      }
+      case "SUCCESFULLY_SENT_GAME": {
+        this.addGame(action.payload);
+        this.emit("GAMES_RECIVED");
+        break;
+      }
+      case "SENDING_VOTES": {
+        this.emit("SENDING_VOTES");
+        break;
+      }
+      case "VOTE_SENT": {
+        this.emit("VOTE_SENT");
+        break;
+      }
+      case "RECIVED_GRAPH_DATA": {
+        this.setGraphData(action.payload);
+        this.emit("RECIVED_GRAPH_DATA");
+        break;
+      }
     }
   }
-
+  setGraphData(data){
+    let tempdata = [];
+    for (let k in data){
+      if (data.hasOwnProperty(k)) {
+           tempdata.push({text: k, value: data[k]})
+      }
+    }
+    this.graphData = tempdata;
+  }
+  storeGames(games){
+    this.games = [];
+    for (var i = 0; i < games.length; i++) {
+      this.games.push({
+        "name": games[i][1],
+        "gameId": games[i][0],
+        "checked": false
+      });
+    }
+  }
+  addGame(game){
+    this.games.push({
+      "name": game[1],
+      "gameId": game[0],
+      "checked": false
+    });
+  }
 }
 
 const userVoteStore = new UserVoteStore;
