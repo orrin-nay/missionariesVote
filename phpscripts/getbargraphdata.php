@@ -13,15 +13,14 @@ $getGameStmt->execute();
 $getGameStmt->bind_result($idGame, $name);
 $games = array();
 $linkTow  = new mysqli($dbhost, $dbuser, $dbpass, $dbname);
-$i = 0;
 while ($getGameStmt->fetch()) {
   $getVotesSQL = "SELECT null FROM votes WHERE `idgame` = ?";
   $getVotesStmt = $linkTow->prepare($getVotesSQL);
   $getVotesStmt->bind_param("s", $idGame);
   $getVotesStmt->execute();
-  $games[$name] = $i;
+  $getVotesStmt->store_result();
+  $games[$name] = $getVotesStmt->num_rows;
   $getVotesStmt->close();
-  $i++;
 }
 $getGameStmt->close();
 $link->close();
