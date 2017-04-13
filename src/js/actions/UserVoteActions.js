@@ -1,6 +1,6 @@
 import dispatcher from "../dispatcher";
 import axios from "axios";
-let handlersURL = "https://missionariesvot.000webhostapp.com/"
+let handlersURL = "https://missionariesvot.000webhostapp.com/";
 export function sendUserInfo(name, email, phone) {
   let info = new URLSearchParams();
   if(name == undefined || name == null || name == "") {

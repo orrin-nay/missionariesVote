@@ -140,7 +140,7 @@ export default class UserVoteForm extends React.Component {
     let gameId = e.target.id.substring("gameId".length);
     for (var i = 0; i < UserVoteStore.games.length; i++) {
       if (UserVoteStore.games[i].gameId == gameId) {
-        UserVoteStore.games[i].checked = true;
+        UserVoteStore.games[i].checked = !UserVoteStore.games[i].checked;
         return;
       }
     }

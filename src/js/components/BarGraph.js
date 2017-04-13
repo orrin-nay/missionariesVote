@@ -30,8 +30,8 @@ export default class UserVoteForm extends React.Component {
           {this.state.showGraph?
                       <div style={{width: '50%'}}>
                           <BarChart ylabel='votes'
-                            width={400}
-                            height={200}
+                            width={600}
+                            height={400}
                             margin={margin}
                             data={UserVoteStore.graphData}/>
                       </div>
