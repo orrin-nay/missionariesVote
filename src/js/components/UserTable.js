@@ -7,8 +7,6 @@ export default class UserTable extends React.Component {
   constructor() {
     super();
     this.state = {
-      showErrorMsg: false,
-      errorMsg: "",
       userTable: "",
       tableLoded: false
     };

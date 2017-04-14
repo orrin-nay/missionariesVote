@@ -34,6 +34,10 @@ class AdminStore extends EventEmitter {
         this.emit("USERS_DELETED");
         break;
       }
+      case "GAMES_DELETED": {
+        this.emit("GAMES_DELETED");
+        break;
+      }
     }
   }
   storeUsers(users){

@@ -1,6 +1,6 @@
 import dispatcher from "../dispatcher";
 import axios from "axios";
-let handlersURL = "https://missionariesvot.000webhostapp.com/"
+let handlersURL = "http://localhost/missionariesvote/phpscripts/"
 
   export function sendLogin(username, password){
     if(username == undefined || username == null || username == "") {
@@ -50,12 +50,33 @@ let handlersURL = "https://missionariesvot.000webhostapp.com/"
       return;
     }
     info.append("userIds", JSON.stringify(userIds))
-    dispatcher.dispatch({type: "SENDING_VOTES"});
     axios.post(handlersURL+"deleteusers.php", info)
       .then((response) => {
         console.log(response.data);
         dispatcher.dispatch({type: "USERS_DELETED", payload: response.data});
         this.getUsers();
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatcher.dispatch({type: "FETCH_TWEETS_REJECTED", payload: err})
+      })
+  }
+  export function deleteGames(games){
+    let gameIds = [];
+    let info = new URLSearchParams();
+    for (var i = 0; i < games.length; i++) {
+      if (games[i].checked) {
+          gameIds.push(games[i].gameId)
+      }
+    }
+    if(games.length == 0){
+      return;
+    }
+    info.append("gameIds", JSON.stringify(gameIds));
+    axios.post(handlersURL+"deletegames.php", info)
+      .then((response) => {
+        console.log(response.data);
+        dispatcher.dispatch({type: "GAMES_DELETED", payload: response.data});
       })
       .catch((err) => {
         console.log(err);

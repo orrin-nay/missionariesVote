@@ -2,6 +2,7 @@ import React from "react";
 import { IndexLink, Link } from "react-router";
 import LoginForm from "../components/LoginForm"
 import UserTable from "../components/UserTable"
+import GameTable from "../components/GameTable"
 import * as AdminActions from "../actions/AdminActions";
 import AdminStore from "../stores/AdminStore";
 
@@ -10,7 +11,8 @@ constructor() {
   super();
   this.state = {
     showLogin: true,
-    showUserTable: false
+    showUserTable: false,
+    showGameTable: false
   };
 }
 componentWillMount() {
@@ -22,6 +24,7 @@ componentWillUnmount() {
 loginSuccess(){
   this.hideLogin();
   this.showUserTable();
+  this.showGameTable();
 }
 hideLogin(){
   this.setState({showLogin: false});
@@ -29,12 +32,16 @@ hideLogin(){
 showUserTable(){
   this.setState({showUserTable: true});
 }
+showGameTable(){
+  this.setState({showGameTable: true});
+}
   render() {
     return (
       <div>
         <h2 class="floatRight small"><IndexLink to="/">Back</IndexLink></h2>
         <h1>Admin Login</h1>
         {this.state.showLogin?<LoginForm />:null}
+        {this.state.showGameTable?<GameTable />:null}
         {this.state.showUserTable?<UserTable />:null}
       </div>
     );

@@ -98,7 +98,8 @@ export function sendNewGame(game) {
     let info = new URLSearchParams();
     for (var i = 0; i < games.length; i++) {
       if (games[i].checked) {
-          gameIds.push(games[i].gameId)
+          gameIds.push(games[i].gameId);
+          games[i].checked = false;
       }
     }
     info.append("votes", JSON.stringify(gameIds))
@@ -115,6 +116,7 @@ export function sendNewGame(game) {
   export function getGraphData(){
     axios.post(handlersURL+"getbargraphdata.php")
       .then((response) => {
+        console.log(response.data);
         dispatcher.dispatch({type: "RECIVED_GRAPH_DATA", payload: response.data})
       })
       .catch((err) => {

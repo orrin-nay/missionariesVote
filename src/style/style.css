@@ -21,3 +21,6 @@ body{
 .game{
   font-size: large;
 }
+.gameTable{
+  width: 540px;
+}
