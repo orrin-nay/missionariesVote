@@ -1,6 +1,6 @@
 import dispatcher from "../dispatcher";
 import axios from "axios";
-let handlersURL = "http://localhost/missionariesvote/phpscripts/"
+let handlersURL = "https://missionariesvot.000webhostapp.com/"
 
   export function sendLogin(username, password){
     if(username == undefined || username == null || username == "") {
@@ -77,6 +77,16 @@ let handlersURL = "http://localhost/missionariesvote/phpscripts/"
       .then((response) => {
         console.log(response.data);
         dispatcher.dispatch({type: "GAMES_DELETED", payload: response.data});
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatcher.dispatch({type: "FETCH_TWEETS_REJECTED", payload: err})
+      })
+  }
+  export function resetVote(){
+    axios.get(handlersURL+"resetvote.php")
+      .then((response) => {
+        dispatcher.dispatch({type: "VOTE_RESET", payload: response.data})
       })
       .catch((err) => {
         console.log(err);

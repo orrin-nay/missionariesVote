@@ -62,7 +62,7 @@ class UserVoteStore extends EventEmitter {
     let tempdata = [];
     for (let k in data){
       if (data.hasOwnProperty(k)) {
-           tempdata.push({text: k, value: data[k]})
+           tempdata.push({text: this.toTitleCase(k), value: data[k]})
       }
     }
     this.graphData = tempdata;
@@ -71,7 +71,7 @@ class UserVoteStore extends EventEmitter {
     this.games = [];
     for (var i = 0; i < games.length; i++) {
       this.games.push({
-        "name": games[i][1],
+        "name": this.toTitleCase(games[i][1]),
         "gameId": games[i][0],
         "checked": false
       });
@@ -79,13 +79,16 @@ class UserVoteStore extends EventEmitter {
   }
   addGame(game){
     this.games.push({
-      "name": game[1],
+      "name": this.toTitleCase(game[1]),
       "gameId": game[0],
       "checked": false
     });
   }
+  toTitleCase(str)
+  {
+      return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+  }
 }
-
 const userVoteStore = new UserVoteStore;
 dispatcher.register(userVoteStore.handleActions.bind(userVoteStore));
 

@@ -6,37 +6,26 @@ if($_SERVER["REQUEST_METHOD"]== "OPTIONS"){
     echo "";die;
 }
     $name = filter_input(INPUT_POST, 'name');
-    $phoneNumber = filter_input(INPUT_POST, 'phone');
     $email = filter_input(INPUT_POST, 'email');
-    if(!empty($email)){
-      if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
-        $email = NULL;
-        echo '2';
-        return;
-      }
-    }
-    if(!empty($phoneNumber)){
-      $phoneNumber = preg_replace("/[^0-9]/", '', $phoneNumber);
-      if (strlen($phoneNumber) == 11) $phoneNumber = preg_replace("/^1/", '',$phoneNumber);
-      if (strlen($phoneNumber) != 10){
-         echo '3';
-         return;
-       }
+    if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+      $email = NULL;
+      echo '2';
+      return;
     }
     if (!empty($name)) {
         require_once './conectvars.php';
-        $userIdSQL = "SELECT iduserinfo FROM userinfo WHERE `name` = ?";
+        $userIdSQL = "SELECT iduserinfo FROM userinfo WHERE `email` = ?";
         $userIdStmt = $link->prepare($userIdSQL);
-        $userIdStmt->bind_param("s", $name);
+        $userIdStmt->bind_param("s", $email);
         $userIdStmt->execute();
         $userIdStmt->bind_result($idUser);
         $userIdStmt->fetch();
         $userIdStmt->close();
         if(empty($idUser)){
-          $addUserSQL = "INSERT INTO userinfo (`name`,`phone`, `email`)
-           VALUES (?, ?, ?)";
+          $addUserSQL = "INSERT INTO userinfo (`name`, `email`)
+           VALUES (?, ?)";
           $addUserStmt = $link->prepare($addUserSQL);
-          $addUserStmt->bind_param("sss", $name,$phoneNumber, $email);
+          $addUserStmt->bind_param("ss", $name, $email);
           $addUserStmt->execute();
           $addUserStmt->close();
 

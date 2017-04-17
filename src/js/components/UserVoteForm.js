@@ -17,19 +17,15 @@ export default class UserVoteForm extends React.Component {
     this.gamesList = "";
     this.userInfoForm =
      <form>
-        <label for="name">Name</label>
+        <label for="name">Full Name</label>
         <br></br>
         <input type="text" id="name" onChange={this.nameChanged.bind(this)}></input>
         <br></br>
 
-        <label for="email">Email(optional)</label>
+        <label for="email">Email</label>
         <br></br>
         <input type="email" id="email" onChange={this.emailChanged.bind(this)}></input>
         <br></br>
-
-        <label for="phone">Phone(optional)</label>
-        <br></br>
-        <input type="tel" id="phone" onChange={this.phoneChanged.bind(this)}></input>
 
         <br></br>
         <input type="button" id="next" value="next >>" onClick={this.sendUserInfo.bind(this)}></input>
@@ -42,16 +38,11 @@ export default class UserVoteForm extends React.Component {
   emailChanged(e){
     this.email = e.target.value;
   }
-
-  phoneChanged(e){
-    this.phone = e.target.value;
-  }
   componentWillMount() {
     UserVoteStore.on("SENDING_USER_INFO", this.showLoding.bind(this));
     UserVoteStore.on("NO_NAME_SUBMITTED", this.noName.bind(this));
     UserVoteStore.on("ALREADY_VOTED", this.alreadyVoted.bind(this));
     UserVoteStore.on("INVALID_EMAIL", this.invalidEmail.bind(this));
-    UserVoteStore.on("INVALID_PHONE", this.invalidPhone.bind(this));
     UserVoteStore.on("SUCCESFULLY_SENT_USER_INFO", this.showGames.bind(this));
     UserVoteStore.on("GAMES_RECIVED", this.buildGamesList.bind(this));
     UserVoteStore.on("SENDING_VOTES", this.showLoding.bind(this));
@@ -63,7 +54,6 @@ export default class UserVoteForm extends React.Component {
     UserVoteStore.removeListener("NO_NAME_SUBMITTED", this.noName.bind(this));
     UserVoteStore.removeListener("ALREADY_VOTED", this.alreadyVoted.bind(this));
     UserVoteStore.removeListener("INVALID_EMAIL", this.invalidEmail.bind(this));
-    UserVoteStore.removeListener("INVALID_PHONE", this.invalidPhone.bind(this));
     UserVoteStore.removeListener("SUCCESFULLY_SENT_USER_INFO", this.showGames.bind(this));
     UserVoteStore.removeListener("GAMES_RECIVED", this.buildGamesList.bind(this));
     UserVoteStore.removeListener("SENDING_VOTES", this.showLoding.bind(this));
@@ -108,15 +98,6 @@ export default class UserVoteForm extends React.Component {
       errorMsg: "Invalid email"
     });
   }
-  invalidPhone(){
-    this.setState({
-      showUserInfo: true,
-      showLoding: false,
-      showGames: false,
-      showErrorMsg: true,
-      errorMsg: "Invalid phonenumber"
-    });
-  }
   showGames(){
     this.setState({
       showUserInfo: false,
@@ -150,7 +131,7 @@ export default class UserVoteForm extends React.Component {
       gamesList : UserVoteStore.games.map(game => <li key={game.gameId} class="game">
       <input onChange={this.userSelectedGame.bind(this)} type="checkbox"
         id={"gameId" + game.gameId}></input>
-      <lable for={"gameId" + game.gameId}>{game.name}</lable></li>)
+      <lable for={"gameId" + game.gameId}>{UserVoteStore.toTitleCase(game.name)}</lable></li>)
     });
   }
   gameChanged(e){
@@ -165,7 +146,7 @@ export default class UserVoteForm extends React.Component {
     UserVoteActions.sendNewGame(this.game);
   }
   sendUserInfo(){
-    UserVoteActions.sendUserInfo(this.name,this.email,this.phone);
+    UserVoteActions.sendUserInfo(this.name,this.email);
   }
   render() {
         return(

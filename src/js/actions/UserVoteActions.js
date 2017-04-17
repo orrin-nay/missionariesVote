@@ -1,14 +1,13 @@
 import dispatcher from "../dispatcher";
 import axios from "axios";
 let handlersURL = "https://missionariesvot.000webhostapp.com/";
-export function sendUserInfo(name, email, phone) {
+export function sendUserInfo(name, email) {
   let info = new URLSearchParams();
   if(name == undefined || name == null || name == "") {
     dispatcher.dispatch({type: "NO_NAME_SUBMITTED"});
     console.log("NO_NAME_SUBMITTED");
     return;
   }
-  if(email !== undefined && email !== null&& email != "") {
     let re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
     if(!re.test(email)){
       dispatcher.dispatch({type: "INVALID_EMAIL"});
@@ -16,19 +15,6 @@ export function sendUserInfo(name, email, phone) {
       return;
     }
     info.append('email', email);
-  }
-  if(phone != undefined && phone != null && phone != "") {
-    phone = phone.replace(/[^\d\+]/g,"");
-    if(phone.charAt(0) == '1'){
-      phone = phone.substr(1);
-    }
-    if(phone.length != 10){
-      dispatcher.dispatch({type: "INVALID_PHONE"});
-      console.log("INVALID_PHONE");
-      return;
-    }
-    info.append('phone', phone);
-  }
   info.append('name', name);
   dispatcher.dispatch({type: "SENDING_USER_INFO"});
   axios.post(handlersURL + "senduserinfo.php",
@@ -41,12 +27,6 @@ export function sendUserInfo(name, email, phone) {
           break;
         case 1:
           dispatcher.dispatch({type: "ALREADY_VOTED"});
-          break;
-        case 2:
-          dispatcher.dispatch({type: "INVALID_EMAIL"});
-          break;
-        case 3:
-          dispatcher.dispatch({type: "INVALID_PHONE"});
           break;
         default:
           dispatcher.dispatch({type: "SUCCESFULLY_SENT_USER_INFO"});
@@ -116,7 +96,6 @@ export function sendNewGame(game) {
   export function getGraphData(){
     axios.post(handlersURL+"getbargraphdata.php")
       .then((response) => {
-        console.log(response.data);
         dispatcher.dispatch({type: "RECIVED_GRAPH_DATA", payload: response.data})
       })
       .catch((err) => {
